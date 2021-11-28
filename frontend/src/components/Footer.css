@@ -1,0 +1,12 @@
+.footer-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  border-top: #dadada solid 1px;
+  padding-top: 20px;
+}
+
+footer-img {
+  /* align-self: center;
+  text-align: center; */
+}

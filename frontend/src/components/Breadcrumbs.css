@@ -1,0 +1,12 @@
+.bc-container {
+  margin-top: 110px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.bc-main {
+  max-width: 1280px;
+  margin: 0 auto;
+  color: #0055ff;
+  font-size: 10pt;
+  font-weight: 500;
+}
