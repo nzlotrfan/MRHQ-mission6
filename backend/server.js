@@ -1,15 +1,36 @@
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 5001;
 require("dotenv").config();
-const { MongoClient } = require("mongodb");
+const PORT = process.env.PORT || 5001;
 const cors = require("cors");
+const path = require("path");
+const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
+const newMessageModel = require("./models/newMessage");
 
 // Express Server Setup
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
+
+const connectDb = async () => {
+  try {
+    await mongoose.connect(process.env.DB_KEYV2, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("DB connected! Hooray!");
+  } catch (error) {
+    console.log("DB didn't connect");
+  }
+};
+
+connectDb();
+
+// Server Connection Status -
+app.get("/", (req, res) => {
+  res.status(200).send("Server is connected yo");
+});
 
 // Email login
 const transporter = nodemailer.createTransport({
@@ -27,34 +48,66 @@ app.get("/", (req, res) => {
   res.status(200).send("Server is connected yo");
 });
 
+// FOR FINDING (BUT I NEED TO AMEND THE CODE)
+// app.post("/new-message", async (req, res) => {
+//   console.log(req.body);
+//   // main(req.body).catch(console.error);
+
+//   // NEW TEST START
+//   mongoose.connect(process.env.DB_KEYV2);
+//   newMessageModel.create(req.body, (err, result) => {
+//     if (result) {
+//       console.log(`New form submission saved to the database!! ID: ${result._id}`);
+//       res.sendStatus(201);
+//     } else {
+//       console.log(err);
+//       res.sendStatus(400).send(err);
+//     }
+//   });
+//   // NEW TEST END
+
 app.post("/new-message", (req, res) => {
   console.log(req.body);
-  main(req.body).catch(console.error);
+  // main(req.body).catch(console.error);
 
-  async function main(formData) {
-    const uri = process.env.DB_KEY;
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  // NEW TEST START
 
-    try {
-      await client.connect();
-      console.log("Database connection was successful!");
-      await createQuote(client, formData);
+  newMessageModel.create(req.body, (err, result) => {
+    if (result) {
+      console.log(`New form submission saved to the database!! ID: ${result._id}`);
       res.sendStatus(201);
-    } catch (err) {
+    } else {
       console.log(err);
       res.sendStatus(400).send(err);
-    } finally {
-      await client.close();
     }
-  }
+    // mongoose.connection.close();
+  });
+  // NEW TEST END
 
-  async function createQuote(client, newQuote) {
-    const quotesCollection = await client
-      .db("reubens-first-db")
-      .collection("m6-email-submissions")
-      .insertOne(newQuote);
-    console.log(`New contact form submission! ID: ${quotesCollection.insertedId}`);
-  }
+  // async function main(formData) {
+  //   const uri = process.env.DB_KEY;
+  //   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+  //   try {
+  //     await client.connect();
+  //     console.log("Database connection was successful!");
+  //     await createQuote(client, formData);
+  //     res.sendStatus(201);
+  //   } catch (err) {
+  //     console.log(err);
+  //     res.sendStatus(400).send(err);
+  //   } finally {
+  //     await client.close();
+  //   }
+  // }
+
+  // async function createQuote(client, newQuote) {
+  //   const quotesCollection = await client
+  //     .db("reubens-first-db")
+  //     .collection("m6-email-submissions")
+  //     .insertOne(newQuote);
+  //   console.log(`New contact form submission! ID: ${quotesCollection.insertedId}`);
+  // }
   // The email submission to send
   var mailOptions = {
     from: "reubens@missionreadyhq.com",

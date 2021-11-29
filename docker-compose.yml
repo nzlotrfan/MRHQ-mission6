@@ -1,34 +1,42 @@
 version: "3.8"
-# services:
-#     backend:
-#       build: ./backend
-#       restart: unless-stopped
-#       ports: 5000:5000
-#       networks:
-#         - backend
-#         - frontend
 
-#     frontend:
-#       build:
-#       context: ./frontend
-
-# networks:
 services:
+  mongodb:
+    image: mongo:5.0.2
+    container_name: M6Mongodb
+    restart: unless-stopped
+    env_file: ./backend/.env
+    ports:
+      - 27017:27017
+    networks:
+      - main
+
   frontend:
-    build: ./frontend #might need to have ./m6practice added
+    image: m6practice_frontend
+    container_name: M6Frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
     ports:
       - 80:80
-    container_name: datacomfrontend
     networks:
       - main
+    restart: unless-stopped
 
   backend:
-    build: ./backend
+    image: m6practice_backend
+    container_name: M6Backend
+    env_file: ./backend/.env
+    build:
+      context: backend
+      dockerfile: Dockerfile
     ports:
       - 5001:5001
-    container_name: datacombackend
     networks:
       - main
+    restart: unless-stopped
+    depends_on:
+      - mongodb
 
 networks:
   main:
