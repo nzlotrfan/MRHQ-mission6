@@ -48,9 +48,9 @@
 }
 
 textarea:focus,
-input:focus:not(:last-child) {
+input:focus:not(.form-submit-btn) {
   outline: none;
-  border: #003fbc solid 4px;
+  border: 4px #003fbc solid;
 }
 
 .form-submit-btn {
