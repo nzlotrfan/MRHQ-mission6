@@ -57,6 +57,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Start containers
+        run: docker-compose -f "docker-compose.yml" up -d --build #Added this test code here
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
