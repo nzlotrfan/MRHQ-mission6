@@ -18,15 +18,25 @@ const Form = () => {
     const value = event.target.value;
     setInputs((values) => ({ ...values, [name]: value }));
   };
+  console.log(`The base url: ${window.location.origin}`);
+  const baseURL = window.location.origin;
+
+  const formattedBaseUrl =
+    baseURL.includes(":80") || baseURL.includes(":3000")
+      ? baseURL.substring(0, baseURL.lastIndexOf(":"))
+      : baseURL;
+
+  console.log(`Final URL that axios will post to: ${formattedBaseUrl}`);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     console.log(inputs);
     axios
-      .post("http://localhost:5001/new-message", inputs)
+      .post(`${formattedBaseUrl}:5001/new-message`, inputs) // use for production enviro
+      // .post("http://localhost:5001/new-message", inputs) // use for development enviro
       .then(function (response) {
-        if (response.status === 201) {
+        if (response.status === 201 || 200) {
           console.log(response);
           setInputs({});
           setOpen(true);

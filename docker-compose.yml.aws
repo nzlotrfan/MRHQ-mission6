@@ -1,4 +1,4 @@
-# For deploying on docker desktop
+# USE THIS COMPOSE FILE WITH THE myecscontext DOCKER CONTEXT, WHEN UPLOADING TO AWS ONLY
 version: "3.8"
 
 services:
@@ -11,9 +11,12 @@ services:
       - 27017:27017
     networks:
       - main
+    volumes:
+      - mdb:/data/db
 
   frontend:
-    image: m6practice_frontend
+    # image: m6practice_frontend
+    image: 432175104527.dkr.ecr.ap-southeast-2.amazonaws.com/reubenrepo:latest
     container_name: M6Frontend
     build:
       context: frontend
@@ -25,7 +28,8 @@ services:
     restart: unless-stopped
 
   backend:
-    image: m6practice_backend
+    # image: m6practice_backend
+    image: 432175104527.dkr.ecr.ap-southeast-2.amazonaws.com/datacombackend:latest
     container_name: M6Backend
     env_file: ./backend/.env
     build:
@@ -41,3 +45,8 @@ services:
 
 networks:
   main:
+    driver: bridge
+
+volumes:
+  mdb:
+    driver: local
