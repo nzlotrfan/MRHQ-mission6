@@ -6,7 +6,6 @@ services:
     image: mongo:5.0.2
     container_name: M6Mongodb
     restart: unless-stopped
-    # env_file: ./backend/.env
     ports:
       - 27017:27017
     networks:
